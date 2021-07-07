@@ -1,32 +1,26 @@
-const express = require('express');
+
 const db = require('./db/connection.js');
+const inquirer = require('inquirer');
+const Connection = require('mysql2/typings/mysql/lib/Connection');
 
 
-
-// looks for index.js if it exists in the directory
-const apiRoutes = require('./routes/apiRoutes');
-
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-//express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-
-
-// router function
-app.use('/api', apiRoutes);
-
-// default 404 not found response
-app.use((req, res) => {
-    res.status(404).end();
-});
-
-// this starts the server after connecting to the database
-db.connect(err => {
-    if (err) throw err;
-    console.log('connected to the database');
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`)
-    });
-});
+// view all departments, 
+'SELECT * FROM departments'
+// view all roles, 
+'SELECT * FROM roles'
+// view all employees, 
+'SELECT * FROM employee'
+// add a department,
+'INSERT INTO departments (name) VALUES (department name goes here)'
+// add a role, 
+connection.cuery(
+    'SELECT * FROM departments',
+    function(err, results, fields) {
+        console.table(results);
+        inquirer.prompt(['question objects go here']).then(data => {
+            `INSERT INTO roles (title, salaray,)`
+        });
+    }
+);
+// add an employee, 
+// and update an employee role
