@@ -13,7 +13,7 @@ const Connection = require('mysql2/typings/mysql/lib/Connection');
 // add a department,
 'INSERT INTO departments (name) VALUES (department name goes here)'
 // add a role, 
-connection.cuery(
+connection.query(
     'SELECT * FROM departments',
     function(err, results, fields) {
         console.table(results);
