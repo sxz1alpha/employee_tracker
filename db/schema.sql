@@ -25,4 +25,3 @@ CREATE TABLE employee (
     FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
 );
 
---TODO: make a manager table or find a way to link managers employee id.
