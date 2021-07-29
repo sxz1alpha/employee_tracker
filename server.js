@@ -1,7 +1,7 @@
 
 const db = require('./db/connection.js');
 const inquirer = require('inquirer');
-const mysql = require('mysql2');
+
 
 
 // main function with switch case for other functions.
@@ -11,7 +11,19 @@ const masterPrompt = () => {
             type: 'list',
             name: 'masterPrompt',
             message: 'What would you like to do?',
-            choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Remove Employee', 'Update Employee Role', 'Update Employee Manager','Delete Department', 'Delete Role', 'Delete Employee']
+            choices: ['View All Departments', 
+                      'View All Roles', 
+                      'View All Employees', 
+                      'View Employees By Department', 
+                      'Add Department', 
+                      'Add Role', 
+                      'Add Employee',  
+                      'Update Employee Role', 
+                      'Update Employee Manager',  
+                      'Delete Department', 
+                      'Delete Role', 
+                      'Delete Employee'
+                    ]
         }
     ])
     .then(data => {
@@ -29,8 +41,6 @@ const masterPrompt = () => {
             updateEmployee();
         } else if(data.masterPrompt === 'Add Employee') {
             addEmployee();
-        } else if(data.masterPrompt === 'Remove Employee') {
-            getAllRoles();
         } else if(data.masterPrompt === 'Update Employee Manager') {
             updateManager();
         } else if (data.masterPrompt === 'Delete Employee') {
@@ -39,6 +49,8 @@ const masterPrompt = () => {
             deleteDepartment();
         } else if (data.masterPrompt === 'Delete Role') {
             deleteRole();
+        } else if (data.masterPrompt === 'View Employees By Department') {
+            viewByDepartment();
         }
     
     });
@@ -189,10 +201,15 @@ const addEmployee = () => {
                 {
                     type: 'number',
                     name: 'managerId',
-                    message: 'Please enter the employees managers id number or press enter if the employee has no manager.'
+                    message: 'Please enter the employees managers id number or press enter if the employee has no manager.',
+                    default: null
                 }
             ])
             .then(data => {
+                if (isNaN(data.managerId)) {
+                    data.managerId = null;
+                }
+                console.log(typeof data.managerId);
                 db.query(
                 `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)`, [data.first, data.last, data.roleId, data.managerId],
                 function(err, data) {
@@ -277,10 +294,39 @@ const updateManager = () => {
     )
 }
 
-//view employees by manager
 
 //view employees by department
+const viewByDepartment = () => {
+    db.query(
+        `SELECT * FROM department`,
+        function(err, results) {
+            if (err) throw err;
+            console.table(results);
 
+            inquirer.prompt([
+                {
+                    type: 'number',
+                    name: 'department',
+                    message: 'Please input the ID for the deparmtent you wish the view.'
+                }
+            ])
+            .then(data => {
+                db.query(
+                    `SELECT employee.*, roles.title, department.name  
+                    FROM employee LEFT JOIN roles ON employee.role_id = roles.id
+                    LEFT JOIN department ON roles.department_id = department.id
+                    WHERE department.id = (?)`, 
+                    [data.department],
+                    function(err, results) {
+                        if (err) throw err;
+                        console.table(results);
+                        masterPrompt();
+                    }
+                )
+            })
+        }
+    )
+}
 //delete department
 const deleteDepartment = () => {
     db.query(
