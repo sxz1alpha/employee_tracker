@@ -16,4 +16,4 @@ installation process is finished. Then type "npm start". Follow the prompts for 
 
 # Video walkthrough.
 
-
+https://www.youtube.com/watch?v=KHX1_p-JkHg&list=TLPQMzAwNzIwMjH9opufFEohug&index=1
